@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { productos, categoriasTienda } from '../data/productos'
 import type { Producto } from '../data/productos'
@@ -7,10 +7,21 @@ function formatPrecio(n: number) {
   return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(n)
 }
 
+const carouselImages = [
+  '/productos/shampoo.png',
+  '/productos/acondicionador.png',
+  'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=200&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=200&h=200&fit=crop',
+]
+
 export default function Tienda() {
   const [busqueda, setBusqueda] = useState('')
   const [categoria, setCategoria] = useState('Categorías')
   const [carrito, setCarrito] = useState<{ producto: Producto; qty: number }[]>([])
+  const [cookiesAceptadas, setCookiesAceptadas] = useState(false)
+  const carouselRef = useRef<HTMLDivElement>(null)
 
   const filtrados = productos.filter((p) => {
     const matchBusqueda = !busqueda || p.nombre.toLowerCase().includes(busqueda.toLowerCase())
@@ -33,35 +44,65 @@ export default function Tienda() {
     })
   }
 
+  const scrollCarousel = (dir: number) => {
+    if (carouselRef.current) carouselRef.current.scrollBy({ left: dir * 220, behavior: 'smooth' })
+  }
+
   return (
     <div className="tienda">
+      <div className="tienda-top-bar">
+        <span className="tienda-top-text">CENTRO DE BELLEZA</span>
+      </div>
+
       <header className="tienda-header">
-        <div className="tienda-top">
-          <span className="tienda-badge">CENTRO DE BELLEZA</span>
+        <div className="tienda-header-busqueda">
+          <input
+            type="search"
+            placeholder="¿Qué estás buscando?"
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="tienda-search-input"
+          />
+          <button type="submit" className="tienda-search-btn" aria-label="Buscar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </button>
         </div>
-        <h1 className="tienda-logo">Cb</h1>
-        <input
-          type="search"
-          placeholder="¿Qué estás buscando?"
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          className="tienda-search"
-        />
+        <Link to="/" className="tienda-logo">Cb</Link>
         <div className="tienda-actions">
-          <span className="tienda-user">Entrá / Registrate</span>
-          <span className="tienda-cart">
-            Carrito ({cantCarrito}) {formatPrecio(totalCarrito)}
+          <span className="tienda-user">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Entrá / Registrate
           </span>
+          <div className="tienda-cart">
+            <span className="tienda-cart-label">Carrito ({cantCarrito})</span>
+            <span className="tienda-cart-total">{formatPrecio(totalCarrito)}</span>
+          </div>
         </div>
       </header>
 
       <nav className="tienda-nav">
-        <span className="nav-item nav-label">CATEGORÍAS</span>
+        <span className="nav-item nav-label">CATEGORÍAS ▾</span>
         <Link to="/" className="nav-item">INICIO</Link>
         <button type="button" className="nav-item active" onClick={() => setCategoria('Categorías')}>PRODUCTOS</button>
         <a href="https://wa.me/543816727830" target="_blank" rel="noopener noreferrer" className="nav-item">CONTACTO</a>
         <Link to="/turnos" className="nav-item">SERVICIOS</Link>
       </nav>
+
+      <section className="tienda-carousel-wrap">
+        <button type="button" className="carousel-arrow carousel-prev" onClick={() => scrollCarousel(-1)} aria-label="Anterior">‹</button>
+        <div className="tienda-carousel" ref={carouselRef}>
+          {carouselImages.map((src, i) => (
+            <div key={i} className="carousel-item">
+              <img src={src} alt="" />
+            </div>
+          ))}
+        </div>
+        <button type="button" className="carousel-arrow carousel-next" onClick={() => scrollCarousel(1)} aria-label="Siguiente">›</button>
+      </section>
+
+      <section className="tienda-hero">
+        <p className="tienda-hero-text">Un espacio para renovarse</p>
+      </section>
 
       <div className="tienda-filtros">
         {categoriasTienda.map((cat) => (
@@ -93,6 +134,13 @@ export default function Tienda() {
         </div>
       </div>
 
+      {!cookiesAceptadas && (
+        <div className="tienda-cookies">
+          <p>Al navegar por este sitio aceptás el uso de cookies para agilizar tu experiencia de compra.</p>
+          <button type="button" onClick={() => setCookiesAceptadas(true)}>Entendido</button>
+        </div>
+      )}
+
       <a
         href="https://wa.me/543816727830"
         target="_blank"
@@ -107,25 +155,63 @@ export default function Tienda() {
 
       <style>{`
         .tienda { padding-bottom: 2rem; }
-        .tienda-header { text-align: center; padding: 1rem; }
-        .tienda-top { margin-bottom: 0.5rem; }
-        .tienda-badge { font-size: 0.8rem; color: var(--color-primario); font-weight: 600; }
-        .tienda-logo { font-size: 2rem; font-weight: 800; margin: 0 0 1rem; letter-spacing: 0.05em; color: var(--color-primario); }
-        .tienda-search {
-          width: 100%; max-width: 400px; padding: 0.75rem 1rem; border: 1px solid #ddd; border-radius: 8px;
-          margin-bottom: 1rem; font-size: 1rem; display: block; margin-left: auto; margin-right: auto;
+        .tienda-top-bar {
+          background: var(--color-primario-claro); padding: 0.4rem 1rem; text-align: right;
         }
-        .tienda-actions { display: flex; justify-content: center; gap: 1.5rem; font-size: 0.9rem; }
+        .tienda-top-text { font-size: 0.8rem; font-weight: 600; color: var(--texto-suave); }
+        .tienda-header {
+          display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+          padding: 1rem; background: white; flex-wrap: wrap; max-width: 1200px; margin: 0 auto;
+        }
+        .tienda-header-busqueda { display: flex; flex: 1; min-width: 180px; max-width: 400px; }
+        .tienda-search-input {
+          flex: 1; padding: 0.6rem 0.75rem; border: 1px solid #ddd; border-right: none; border-radius: 8px 0 0 8px; font-size: 0.95rem;
+        }
+        .tienda-search-btn {
+          padding: 0.6rem 0.75rem; border: 1px solid #ddd; border-radius: 0 8px 8px 0;
+          background: var(--color-primario-claro); color: var(--texto); cursor: pointer;
+        }
+        .tienda-logo { font-size: 1.75rem; font-weight: 800; letter-spacing: 0.05em; color: var(--texto); text-decoration: none; }
+        .tienda-actions { display: flex; align-items: center; gap: 1.25rem; font-size: 0.9rem; }
+        .tienda-user { display: flex; align-items: center; gap: 0.4rem; color: var(--texto); }
+        .tienda-cart { display: flex; flex-direction: column; align-items: flex-end; }
+        .tienda-cart-label { font-size: 0.85rem; }
+        .tienda-cart-total { font-weight: 700; }
         .tienda-nav {
-          display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; background: var(--color-primario);
-          padding: 0.75rem; margin-bottom: 1rem;
+          display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem; background: var(--color-primario);
+          padding: 0.6rem 1rem;
         }
         .nav-item {
-          background: none; border: none; color: white; padding: 0.5rem 1rem; font-size: 0.9rem; font-weight: 500;
+          background: none; border: none; color: white; padding: 0.5rem 1rem; font-size: 0.9rem; font-weight: 500; text-decoration: none;
         }
         .nav-item:hover { opacity: 0.95; }
         .nav-item.active { text-decoration: underline; }
         .nav-item.nav-label { cursor: default; }
+        .tienda-carousel-wrap {
+          position: relative; max-width: 1200px; margin: 0 auto; padding: 0 2.5rem;
+        }
+        .carousel-arrow {
+          position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%;
+          background: rgba(255,255,255,0.9); border: 1px solid #ddd; font-size: 1.5rem; line-height: 1; cursor: pointer; z-index: 1;
+        }
+        .carousel-prev { left: 0.5rem; }
+        .carousel-next { right: 0.5rem; }
+        .tienda-carousel {
+          display: flex; gap: 0.5rem; overflow-x: auto; scroll-snap-type: x mandatory; padding: 1rem 0;
+          scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .tienda-carousel::-webkit-scrollbar { display: none; }
+        .carousel-item {
+          flex-shrink: 0; width: 140px; height: 140px; scroll-snap-align: start; border-radius: 8px; overflow: hidden;
+        }
+        .carousel-item img { width: 100%; height: 100%; object-fit: cover; }
+        .tienda-hero {
+          min-height: 200px; display: flex; align-items: center; justify-content: center;
+          background: linear-gradient(135deg, var(--color-primario-claro) 0%, var(--crema) 100%); margin: 1rem 0;
+        }
+        .tienda-hero-text {
+          font-size: 1.75rem; font-weight: 700; color: var(--texto); margin: 0; letter-spacing: 0.02em;
+        }
         .tienda-filtros { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; padding: 0 1rem 1rem; }
         .tienda-filtros button {
           padding: 0.5rem 1rem; border: 1px solid #ccc; background: white; border-radius: 999px; font-size: 0.9rem;
@@ -145,6 +231,14 @@ export default function Tienda() {
         .producto-card h3 { font-size: 0.95rem; margin: 0.75rem 0.5rem 0; }
         .producto-precio { font-weight: 700; margin: 0.25rem 0 0.75rem; }
         .btn-sm { max-width: none; padding: 0.5rem 1rem; font-size: 0.85rem; }
+        .tienda-cookies {
+          position: fixed; bottom: 1.5rem; left: 1rem; max-width: 320px; padding: 1rem;
+          background: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 10;
+        }
+        .tienda-cookies p { margin: 0 0 0.75rem; font-size: 0.85rem; line-height: 1.4; }
+        .tienda-cookies button {
+          padding: 0.5rem 1rem; background: var(--color-primario); color: white; border: none; border-radius: 6px; font-size: 0.9rem; cursor: pointer;
+        }
         .whatsapp-float {
           position: fixed; bottom: 1.5rem; right: 1.5rem; width: 56px; height: 56px; border-radius: 50%;
           background: #25d366; color: white; display: flex; align-items: center; justify-content: center;
