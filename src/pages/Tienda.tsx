@@ -44,8 +44,13 @@ export default function Tienda() {
     })
   }
 
+  const CAROUSEL_ITEM_WIDTH = 120
+  const CAROUSEL_GAP = 8
   const scrollCarousel = (dir: number) => {
-    if (carouselRef.current) carouselRef.current.scrollBy({ left: dir * 220, behavior: 'smooth' })
+    if (carouselRef.current) {
+      const step = (CAROUSEL_ITEM_WIDTH + CAROUSEL_GAP) * dir
+      carouselRef.current.scrollBy({ left: step, behavior: 'smooth' })
+    }
   }
 
   return (
@@ -93,7 +98,9 @@ export default function Tienda() {
         <div className="tienda-carousel" ref={carouselRef}>
           {carouselImages.map((src, i) => (
             <div key={i} className="carousel-item">
-              <img src={src} alt="" />
+              <div className="carousel-item-inner">
+                <img src={src} alt="" />
+              </div>
             </div>
           ))}
         </div>
@@ -197,14 +204,18 @@ export default function Tienda() {
         .carousel-prev { left: 0.5rem; }
         .carousel-next { right: 0.5rem; }
         .tienda-carousel {
-          display: flex; gap: 0.5rem; overflow-x: auto; scroll-snap-type: x mandatory; padding: 1rem 0;
-          scrollbar-width: none; -ms-overflow-style: none;
+          display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 1rem 0;
+          scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: smooth;
         }
         .tienda-carousel::-webkit-scrollbar { display: none; }
         .carousel-item {
-          flex-shrink: 0; width: 140px; height: 140px; scroll-snap-align: start; border-radius: 8px; overflow: hidden;
+          flex-shrink: 0; width: 120px; height: 180px; scroll-snap-align: start; scroll-snap-stop: always;
+          border-radius: 8px; overflow: hidden; background: var(--crema);
         }
-        .carousel-item img { width: 100%; height: 100%; object-fit: cover; }
+        .carousel-item-inner {
+          width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 8px;
+        }
+        .carousel-item img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
         .tienda-hero {
           min-height: 200px; display: flex; align-items: center; justify-content: center;
           background: linear-gradient(135deg, var(--color-primario-claro) 0%, var(--crema) 100%); margin: 1rem 0;
