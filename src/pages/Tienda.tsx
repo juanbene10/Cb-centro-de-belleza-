@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { productos, categoriasTienda } from '../data/productos'
 import type { Producto } from '../data/productos'
 
@@ -55,11 +56,11 @@ export default function Tienda() {
       </header>
 
       <nav className="tienda-nav">
-        <button type="button" className="nav-item">CATEGORIAS ▾</button>
-        <button type="button" className="nav-item active">INICIO</button>
-        <button type="button" className="nav-item">PRODUCTOS</button>
-        <button type="button" className="nav-item">CONTACTO</button>
-        <button type="button" className="nav-item">SERVICIOS</button>
+        <span className="nav-item nav-label">CATEGORÍAS</span>
+        <Link to="/" className="nav-item">INICIO</Link>
+        <button type="button" className="nav-item active" onClick={() => setCategoria('Categorías')}>PRODUCTOS</button>
+        <a href="https://wa.me/543816727830" target="_blank" rel="noopener noreferrer" className="nav-item">CONTACTO</a>
+        <Link to="/turnos" className="nav-item">SERVICIOS</Link>
       </nav>
 
       <div className="tienda-filtros">
@@ -79,7 +80,9 @@ export default function Tienda() {
         <div className="productos-grid">
           {filtrados.map((p) => (
             <article key={p.id} className="producto-card">
-              <img src={p.imagen} alt={p.nombre} onError={(e) => { (e.currentTarget as HTMLImageElement).src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect fill="%23f0f0f0" width="300" height="300"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23999" font-family="sans-serif" font-size="14">Sin imagen</text></svg>') }} />
+              <div className="producto-img-wrap">
+                <img src={p.imagen} alt={p.nombre} loading="lazy" onError={(e) => { (e.currentTarget as HTMLImageElement).src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect fill="%23f0f0f0" width="300" height="300"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23999" font-family="sans-serif" font-size="14">Sin imagen</text></svg>') }} />
+              </div>
               <h3>{p.nombre}</h3>
               <p className="producto-precio">{formatPrecio(p.precio)}</p>
               <button type="button" className="btn-principal btn-sm" onClick={() => agregar(p)}>
@@ -120,7 +123,9 @@ export default function Tienda() {
         .nav-item {
           background: none; border: none; color: white; padding: 0.5rem 1rem; font-size: 0.9rem; font-weight: 500;
         }
+        .nav-item:hover { opacity: 0.95; }
         .nav-item.active { text-decoration: underline; }
+        .nav-item.nav-label { cursor: default; }
         .tienda-filtros { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; padding: 0 1rem 1rem; }
         .tienda-filtros button {
           padding: 0.5rem 1rem; border: 1px solid #ccc; background: white; border-radius: 999px; font-size: 0.9rem;
@@ -133,7 +138,10 @@ export default function Tienda() {
           background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px var(--sombra);
           text-align: center; padding-bottom: 1rem;
         }
-        .producto-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+        .producto-card .producto-img-wrap {
+          width: 100%; aspect-ratio: 3/4; background: var(--crema); display: flex; align-items: center; justify-content: center; padding: 0.75rem;
+        }
+        .producto-card .producto-img-wrap img { width: 100%; height: 100%; object-fit: contain; }
         .producto-card h3 { font-size: 0.95rem; margin: 0.75rem 0.5rem 0; }
         .producto-precio { font-weight: 700; margin: 0.25rem 0 0.75rem; }
         .btn-sm { max-width: none; padding: 0.5rem 1rem; font-size: 0.85rem; }

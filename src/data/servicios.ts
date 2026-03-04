@@ -12,14 +12,19 @@ export interface Profesional {
   id: string
   nombre: string
   avatar: string
+  especialidad: string
+  detalle?: string
+  /** IDs de servicios que realiza este profesional */
+  serviciosIds: string[]
 }
 
+// Fotos del personal en public/personal/ — serviciosIds referencian a servicios[].id
 export const profesionales: Profesional[] = [
-  { id: '1', nombre: 'Valentina', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Valentina' },
-  { id: '2', nombre: 'Valeria', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Valeria' },
-  { id: '3', nombre: 'Jessica', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica' },
-  { id: '4', nombre: 'Camila', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Camila' },
-  { id: '5', nombre: 'Florencia', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Florencia' },
+  { id: '1', nombre: 'Valentina', avatar: '/personal/valentina.png', especialidad: 'Manos y pies', detalle: 'Uñas esculpidas, semi permanente, polygel y podoestética.', serviciosIds: ['1', '2', '3', '4', '5', '6'] },
+  { id: '2', nombre: 'Valeria', avatar: '/personal/valeria.png', especialidad: 'Peluquería', detalle: 'Corte, color, mechas y tratamientos capilares.', serviciosIds: ['9', '10', '11', '12'] },
+  { id: '3', nombre: 'Jessica', avatar: '/personal/jessica.png', especialidad: 'Manos y pies', detalle: 'Esmaltado semi, esculpidas y nail art.', serviciosIds: ['1', '2', '3', '5', '6'] },
+  { id: '4', nombre: 'Camila', avatar: '/personal/camila.png', especialidad: 'Facial', detalle: 'Limpieza facial, hidratación y tratamientos personalizados.', serviciosIds: ['7', '8'] },
+  { id: '5', nombre: 'Florencia', avatar: '/personal/florencia.png', especialidad: 'Peluquería y color', detalle: 'Corte, coloración, balayage y cuidado del cabello.', serviciosIds: ['9', '10', '11', '12'] },
 ]
 
 export const categorias = [

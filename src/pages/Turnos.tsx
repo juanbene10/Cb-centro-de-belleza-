@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { profesionales, servicios, categorias } from '../data/servicios'
-import type { Servicio } from '../data/servicios'
+import type { Servicio, Profesional } from '../data/servicios'
 
 function formatPrecio(n: number) {
   return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(n)
@@ -10,8 +10,18 @@ export default function Turnos() {
   const [busqueda, setBusqueda] = useState('')
   const [categoriaActiva, setCategoriaActiva] = useState<string | null>(null)
   const [carrito, setCarrito] = useState<Servicio[]>([])
+  const [bannerVisible, setBannerVisible] = useState(true)
+  const [profesionalSeleccionado, setProfesionalSeleccionado] = useState<Profesional | null>(null)
 
-  const filtrados = servicios.filter((s) => {
+  const serviciosParaMostrar = profesionalSeleccionado
+    ? servicios.filter((s) => profesionalSeleccionado.serviciosIds.includes(s.id))
+    : servicios
+
+  const categoriasVisibles = profesionalSeleccionado
+    ? [...new Set(serviciosParaMostrar.map((s) => s.categoria))]
+    : categorias
+
+  const filtrados = serviciosParaMostrar.filter((s) => {
     const matchBusqueda = !busqueda || s.nombre.toLowerCase().includes(busqueda.toLowerCase())
     const matchCat = !categoriaActiva || s.categoria === categoriaActiva
     return matchBusqueda && matchCat
@@ -46,19 +56,36 @@ export default function Turnos() {
       </section>
 
       <section className="turnos-profesionales">
-        <h2>Profesionales</h2>
+        <h2>Elegí tu profesional</h2>
+        <p className="turnos-profesionales-leyenda">Seleccioná a una para ver en qué se especializa</p>
         <div className="profesionales-grid">
           {profesionales.map((p) => (
-            <div key={p.id} className="profesional-card">
+            <button
+              key={p.id}
+              type="button"
+              className={`profesional-card ${profesionalSeleccionado?.id === p.id ? 'selected' : ''}`}
+              onClick={() => {
+              setProfesionalSeleccionado(profesionalSeleccionado?.id === p.id ? null : p)
+              setCategoriaActiva(null)
+            }}
+            >
               <img src={p.avatar} alt={p.nombre} />
-              <span>{p.nombre}</span>
-            </div>
+              <span className="profesional-nombre">{p.nombre}</span>
+              <span className="profesional-especialidad">{p.especialidad}</span>
+            </button>
           ))}
         </div>
       </section>
 
       <section className="turnos-servicios">
-        <h2>Servicios</h2>
+        <h2>
+          {profesionalSeleccionado
+            ? `Servicios de ${profesionalSeleccionado.nombre}`
+            : 'Servicios'}
+        </h2>
+        {profesionalSeleccionado && (
+          <p className="turnos-servicios-leyenda">Solo se muestran los servicios que realiza esta profesional.</p>
+        )}
         <input
           type="search"
           placeholder="Buscar servicios..."
@@ -67,7 +94,7 @@ export default function Turnos() {
           className="turnos-search"
         />
         <div className="turnos-filtros">
-          {categorias.map((cat) => (
+          {categoriasVisibles.map((cat) => (
             <button
               key={cat}
               type="button"
@@ -79,7 +106,7 @@ export default function Turnos() {
           ))}
         </div>
 
-        {categorias.map((cat) => {
+        {categoriasVisibles.map((cat) => {
           const list = porCategoria[cat]
           if (!list?.length) return null
           return (
@@ -112,13 +139,15 @@ export default function Turnos() {
         })}
       </section>
 
-      <div className="turnos-banner">
-        <p>¡Bienvenida a Cb Centro De Belleza! Pagando en efectivo tenés 20% off.</p>
-        <button type="button" className="banner-close" aria-label="Cerrar">×</button>
-      </div>
+      {bannerVisible && (
+        <div className="turnos-banner">
+          <p>¡Bienvenida a Cb Centro De Belleza! Pagando en efectivo tenés 20% off.</p>
+          <button type="button" className="banner-close" aria-label="Cerrar" onClick={() => setBannerVisible(false)}>×</button>
+        </div>
+      )}
 
       {carrito.length > 0 && (
-        <div className="carrito-turnos">
+        <div className="carrito-turnos" style={{ bottom: bannerVisible ? '4rem' : '1.5rem' }}>
           <strong>Tu selección ({carrito.length})</strong>
           <p>Total: {formatPrecio(carrito.reduce((sum, s) => sum + s.precio, 0))}</p>
         </div>
@@ -135,17 +164,24 @@ export default function Turnos() {
         .turnos-status { color: #16a34a; margin: 0 0 0.25rem; font-weight: 500; }
         .turnos-address { margin: 0; font-size: 0.9rem; color: #555; }
         .turnos-address a { color: var(--color-primario); }
-        .turnos-profesionales h2, .turnos-servicios h2 { font-size: 1.25rem; margin-bottom: 1rem; }
+        .turnos-profesionales h2, .turnos-servicios h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .turnos-servicios-leyenda { margin: 0 0 1rem; font-size: 0.9rem; color: #555; }
+        .turnos-profesionales-leyenda { margin: -0.5rem 0 1rem; font-size: 0.9rem; color: #555; }
         .profesionales-grid {
-          display: flex; gap: 1rem; overflow-x: auto; padding-bottom: 0.5rem; margin-bottom: 2rem;
+          display: flex; flex-wrap: wrap; gap: 1rem; padding-bottom: 0.5rem; margin-bottom: 1rem;
         }
         .profesional-card {
-          flex-shrink: 0; text-align: center; width: 80px;
+          flex-shrink: 0; text-align: center; width: 100px; padding: 0.75rem; border: 2px solid transparent;
+          border-radius: 12px; background: white; box-shadow: 0 2px 8px var(--sombra); cursor: pointer;
+          display: flex; flex-direction: column; align-items: center; gap: 0.35rem; transition: border-color 0.2s, box-shadow 0.2s;
         }
+        .profesional-card:hover { border-color: var(--color-primario-claro); box-shadow: 0 4px 12px var(--sombra); }
+        .profesional-card.selected { border-color: var(--color-primario); box-shadow: 0 0 0 2px var(--color-primario-claro); }
         .profesional-card img {
-          width: 64px; height: 64px; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto 0.5rem;
+          width: 64px; height: 64px; border-radius: 50%; object-fit: cover; display: block;
         }
-        .profesional-card span { font-size: 0.85rem; }
+        .profesional-nombre { font-size: 0.9rem; font-weight: 600; color: var(--texto); }
+        .profesional-especialidad { font-size: 0.75rem; color: var(--color-primario); }
         .turnos-search {
           width: 100%; padding: 0.75rem 1rem; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 1rem; font-size: 1rem;
         }

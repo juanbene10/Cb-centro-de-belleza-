@@ -7,22 +7,12 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   return (
     <>
       {!isHome && (
-        <header style={{
-          background: 'var(--color-primario)',
-          color: 'white',
-          padding: '0.75rem 1rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '1rem',
-        }}>
-          <Link to="/" style={{ color: 'white', fontWeight: 700, fontSize: '1.25rem' }}>
-            Cb Centro De Belleza
-          </Link>
-          <nav style={{ display: 'flex', gap: '1rem' }}>
-            <Link to="/" style={{ color: 'rgba(255,255,255,0.9)' }}>Inicio</Link>
-            <Link to="/turnos" style={{ color: 'rgba(255,255,255,0.9)' }}>Turnos</Link>
-            <Link to="/tienda" style={{ color: 'rgba(255,255,255,0.9)' }}>Tienda</Link>
+        <header className="app-header">
+          <Link to="/" className="brand">Cb Centro De Belleza</Link>
+          <nav className="app-nav">
+            <Link to="/">Inicio</Link>
+            <Link to="/turnos">Turnos</Link>
+            <Link to="/tienda">Tienda</Link>
           </nav>
         </header>
       )}

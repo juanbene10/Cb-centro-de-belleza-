@@ -1,27 +1,27 @@
 # Cb Centro De Belleza
 
-App web para el salón Cb Centro De Belleza: landing, turnos y tienda online.
+Maqueta web del salón **Cb Centro De Belleza** (San Miguel de Tucumán): sitio de presentación con reserva de turnos y tienda online.
 
-## Cómo ejecutar
+## Cómo ver la maqueta
 
 ```bash
 npm install
 npm run dev
 ```
 
-Abre [http://localhost:5173](http://localhost:5173) en el navegador.
+Abrir [http://localhost:5173](http://localhost:5173).
 
-## Contenido
+## Secciones
 
-- **Inicio**: Landing con logo y botones a Tienda Online, App de Turnos, WhatsApp y Ubicación.
-- **Turnos**: Profesionales, servicios por categoría (manos/pies, facial, peluquería), precios con descuentos y selección para reserva. Banner promocional (efectivo 20% off).
-- **Tienda**: Búsqueda, categorías, productos y carrito. Botón flotante de WhatsApp.
+- **Inicio** — Logo, eslogan “Un espacio para renovarse”, horarios, dirección y acceso a Tienda, Turnos, WhatsApp y Ubicación (Google Maps).
+- **Turnos** — Profesionales, servicios por categoría (manos/pies, facial, peluquería), precios con 20% off en efectivo, selección de servicios. Banner promocional cerrable.
+- **Tienda** — Productos por categoría, búsqueda, carrito y botón flotante de WhatsApp.
 
-## Build
+## Build para producción
 
 ```bash
 npm run build
 npm run preview
 ```
 
-La salida queda en la carpeta `dist/`.
+Archivos generados en `dist/`.

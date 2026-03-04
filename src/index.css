@@ -46,6 +46,12 @@ button {
   cursor: pointer;
 }
 
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-primario);
+  outline-offset: 2px;
+}
+
 .btn-principal {
   display: inline-flex;
   align-items: center;
@@ -82,4 +88,38 @@ button {
   .container {
     padding: 2rem;
   }
+}
+
+/* Layout: cabecera interna */
+.app-header {
+  background: var(--color-primario);
+  color: white;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.app-header a {
+  color: white;
+}
+.app-header .brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.app-header .brand:hover {
+  color: rgba(255, 255, 255, 0.95);
+}
+.app-nav {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.app-nav a {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+}
+.app-nav a:hover {
+  color: white;
 }
