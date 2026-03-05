@@ -255,6 +255,35 @@ export default function Tienda() {
           background: #25d366; color: white; display: flex; align-items: center; justify-content: center;
           box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
+        @media (max-width: 768px) {
+          .tienda-header { padding: 0.75rem; gap: 0.75rem; }
+          .tienda-header-busqueda { max-width: 100%; }
+          .tienda-logo { font-size: 1.5rem; }
+          .tienda-actions { gap: 1rem; font-size: 0.85rem; }
+          .tienda-nav { padding: 0.5rem 0.75rem; }
+          .nav-item { padding: 0.45rem 0.75rem; font-size: 0.85rem; }
+          .tienda-carousel-wrap { padding: 0 2.25rem; }
+          .carousel-arrow { width: 32px; height: 32px; font-size: 1.25rem; }
+          .carousel-prev { left: 0.25rem; }
+          .carousel-next { right: 0.25rem; }
+          .tienda-hero { min-height: 160px; margin: 0.75rem 0; }
+          .tienda-hero-text { font-size: 1.4rem; }
+          .productos-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+          .producto-card h3 { font-size: 0.9rem; }
+        }
+        @media (max-width: 480px) {
+          .tienda-header { flex-direction: column; align-items: stretch; }
+          .tienda-header-busqueda { max-width: 100%; }
+          .tienda-logo { text-align: center; }
+          .tienda-actions { justify-content: center; }
+          .tienda-carousel-wrap { padding: 0 2rem; }
+          .carousel-item { width: 100px; height: 150px; }
+          .tienda-hero-text { font-size: 1.2rem; }
+          .tienda-filtros { padding: 0 0.75rem 0.75rem; }
+          .tienda-filtros button { padding: 0.45rem 0.85rem; font-size: 0.85rem; }
+          .tienda-cookies { left: 0.75rem; right: 0.75rem; max-width: none; bottom: 1rem; }
+          .whatsapp-float { bottom: 1rem; right: 1rem; width: 52px; height: 52px; }
+        }
       `}</style>
     </div>
   )

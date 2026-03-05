@@ -135,6 +135,14 @@ export default function Home() {
         }
         .home-footer p { margin: 0.25rem 0; }
         .home-footer-address, .home-footer-horarios { color: var(--texto-suave); }
+        @media (max-width: 480px) {
+          .home { padding: 1.25rem 0.75rem; }
+          .logo-img { width: 130px; height: 130px; }
+          .home-title { font-size: 1.2rem; }
+          .home-tagline { font-size: 0.95rem; }
+          .home-buttons { max-width: 100%; }
+          .home-footer { font-size: 0.8rem; padding-top: 1.5rem; }
+        }
       `}</style>
     </div>
   )

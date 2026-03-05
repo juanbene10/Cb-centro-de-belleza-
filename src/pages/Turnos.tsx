@@ -365,6 +365,28 @@ export default function Turnos() {
           font-size: 1rem; font-weight: 600; cursor: pointer;
         }
         .btn-reservar-turno:hover { background: var(--color-primario-hover); }
+        @media (max-width: 768px) {
+          .turnos-header h1 { font-size: 1.5rem; }
+          .turnos-header { margin-bottom: 1.5rem; }
+          .profesionales-grid { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 0.5rem; -webkit-overflow-scrolling: touch; }
+          .profesional-card { flex-shrink: 0; }
+          .servicio-card { padding: 0.85rem; gap: 0.75rem; }
+          .btn-add { width: 44px; height: 44px; min-width: 44px; min-height: 44px; font-size: 1.35rem; }
+          .turnos-banner { padding: 0.85rem 2.5rem 0.85rem 0.85rem; }
+          .turnos-banner p { font-size: 0.85rem; }
+          .carrito-turnos { right: 0.75rem; padding: 0.85rem; font-size: 0.9rem; }
+        }
+        @media (max-width: 480px) {
+          .turnos { padding-bottom: 5.5rem; }
+          .turnos-header h1 { font-size: 1.35rem; }
+          .turnos-tagline, .turnos-horarios { font-size: 0.85rem; }
+          .turnos-dia-btn { min-width: 52px; padding: 0.5rem 0.6rem; font-size: 0.8rem; }
+          .turnos-hora-btn { padding: 0.6rem 0.85rem; min-height: 44px; }
+          .btn-reservar-turno { padding: 0.9rem; min-height: 48px; }
+          .turnos-modal { padding: 1.5rem; margin: 1rem; }
+          .turnos-modal-titulo { font-size: 1.2rem; }
+          .turnos-modal-btn { padding: 0.85rem 1.5rem; min-height: 48px; }
+        }
       `}</style>
     </div>
   )
