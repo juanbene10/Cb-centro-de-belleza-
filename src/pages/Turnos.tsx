@@ -49,10 +49,15 @@ export default function Turnos() {
   const formatDiaKey = (d: Date) => d.toISOString().slice(0, 10)
 
   const puedeReservar = carrito.length > 0 && fechaSeleccionada && horarioSeleccionado
+  const [reservaConfirmada, setReservaConfirmada] = useState<{ fecha: string; hora: string } | null>(null)
+
   const confirmarTurno = () => {
     if (!puedeReservar) return
     const dia = proximosDias.find((d) => formatDiaKey(d) === fechaSeleccionada)
-    alert(`Demo: Turno reservado para el ${dia ? formatDia(dia) : fechaSeleccionada} a las ${horarioSeleccionado}. En la versión final esto se enviará al salón.`)
+    setReservaConfirmada({
+      fecha: dia ? formatDia(dia) : fechaSeleccionada,
+      hora: horarioSeleccionado ?? '',
+    })
   }
 
   return (
@@ -207,6 +212,21 @@ export default function Turnos() {
         </section>
       )}
 
+      {reservaConfirmada && (
+        <div className="turnos-modal-overlay" onClick={() => setReservaConfirmada(null)}>
+          <div className="turnos-modal" onClick={(e) => e.stopPropagation()}>
+            <p className="turnos-modal-titulo">¡Turno reservado!</p>
+            <p className="turnos-modal-texto">
+              Te esperamos el <strong>{reservaConfirmada.fecha}</strong> a las <strong>{reservaConfirmada.hora}</strong>.
+            </p>
+            <p className="turnos-modal-sub">Nos contactaremos para confirmar.</p>
+            <button type="button" className="turnos-modal-btn" onClick={() => setReservaConfirmada(null)}>
+              Entendido
+            </button>
+          </div>
+        </div>
+      )}
+
       {bannerVisible && (
         <div className="turnos-banner">
           <p>¡Bienvenida a Cb Centro De Belleza! Pagando en efectivo tenés 20% off.</p>
@@ -285,6 +305,23 @@ export default function Turnos() {
         }
         .turnos-banner p { margin: 0; font-size: 0.9rem; }
         .banner-close { background: none; border: none; color: white; font-size: 1.5rem; padding: 0 0.5rem; }
+        .turnos-modal-overlay {
+          position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;
+          z-index: 100; padding: 1rem;
+        }
+        .turnos-modal {
+          background: white; border-radius: 16px; padding: 2rem; max-width: 340px; width: 100%;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.2); text-align: center;
+        }
+        .turnos-modal-titulo { font-size: 1.35rem; font-weight: 700; color: var(--color-primario); margin: 0 0 1rem; }
+        .turnos-modal-texto { font-size: 1rem; color: var(--texto); margin: 0 0 0.5rem; line-height: 1.5; }
+        .turnos-modal-texto strong { color: var(--color-primario); }
+        .turnos-modal-sub { font-size: 0.9rem; color: #666; margin: 0 0 1.5rem; }
+        .turnos-modal-btn {
+          padding: 0.75rem 2rem; background: var(--color-primario); color: white; border: none; border-radius: 10px;
+          font-size: 1rem; font-weight: 600; cursor: pointer;
+        }
+        .turnos-modal-btn:hover { background: var(--color-primario-hover); }
         .carrito-turnos {
           position: fixed; bottom: 4rem; right: 1rem; background: var(--color-primario); color: white; padding: 1rem;
           border-radius: 12px; box-shadow: 0 4px 12px var(--sombra);
