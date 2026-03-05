@@ -105,11 +105,20 @@ button:focus-visible {
   color: white;
 }
 .app-header .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-weight: 700;
   font-size: 1.1rem;
 }
 .app-header .brand:hover {
   color: rgba(255, 255, 255, 0.95);
+}
+.app-header .brand-logo {
+  height: 36px;
+  width: 36px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 .app-nav {
   display: flex;

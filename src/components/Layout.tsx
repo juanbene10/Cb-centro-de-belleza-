@@ -8,7 +8,10 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
     <>
       {!isHome && (
         <header className="app-header">
-          <Link to="/" className="brand">Cb Centro De Belleza</Link>
+          <Link to="/" className="brand">
+            <img src="/logo-cb.png" alt="" className="brand-logo" />
+            <span>Cb Centro De Belleza</span>
+          </Link>
           <nav className="app-nav">
             <Link to="/">Inicio</Link>
             <Link to="/turnos">Turnos</Link>

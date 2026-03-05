@@ -101,9 +101,10 @@ export default function Home() {
           margin-bottom: 0.5rem;
         }
         .logo-img {
-          max-width: 200px;
-          height: auto;
-          object-fit: contain;
+          width: 160px;
+          height: 160px;
+          border-radius: 50%;
+          object-fit: cover;
         }
         .home-title {
           font-size: 1.35rem;
