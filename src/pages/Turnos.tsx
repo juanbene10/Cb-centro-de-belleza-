@@ -109,6 +109,9 @@ export default function Turnos() {
             ? `Servicios de ${profesionalSeleccionado.nombre}`
             : 'Servicios'}
         </h2>
+        {!profesionalSeleccionado && (
+          <p className="turnos-servicios-leyenda turnos-servicios-aviso">Elegí primero una profesional para poder agregar servicios.</p>
+        )}
         {profesionalSeleccionado && (
           <p className="turnos-servicios-leyenda">Solo se muestran los servicios que realiza esta profesional.</p>
         )}
@@ -154,7 +157,13 @@ export default function Turnos() {
                         <span>{formatPrecio(s.precio)}</span>
                       </div>
                     </div>
-                    <button type="button" className="btn-add" onClick={() => agregar(s)} aria-label="Agregar">
+                    <button
+                      type="button"
+                      className={`btn-add ${!profesionalSeleccionado ? 'btn-add-disabled' : ''}`}
+                      onClick={() => profesionalSeleccionado && agregar(s)}
+                      disabled={!profesionalSeleccionado}
+                      aria-label="Agregar"
+                    >
                       +
                     </button>
                   </div>
@@ -254,6 +263,8 @@ export default function Turnos() {
         .turnos-address a { color: var(--color-primario); }
         .turnos-profesionales h2, .turnos-servicios h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
         .turnos-servicios-leyenda { margin: 0 0 1rem; font-size: 0.9rem; color: #555; }
+        .turnos-servicios-aviso { color: var(--color-primario); font-weight: 500; }
+        .btn-add-disabled { opacity: 0.5; cursor: not-allowed; }
         .turnos-profesionales-leyenda { margin: -0.5rem 0 1rem; font-size: 0.9rem; color: #555; }
         .profesionales-grid {
           display: flex; flex-wrap: wrap; gap: 1rem; padding-bottom: 0.5rem; margin-bottom: 1rem;
