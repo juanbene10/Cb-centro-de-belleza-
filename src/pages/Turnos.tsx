@@ -34,6 +34,27 @@ export default function Turnos() {
 
   const agregar = (s: Servicio) => setCarrito((prev) => [...prev, s])
 
+  const [fechaSeleccionada, setFechaSeleccionada] = useState<string | null>(null)
+  const [horarioSeleccionado, setHorarioSeleccionado] = useState<string | null>(null)
+
+  const proximosDias = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date()
+    d.setDate(d.getDate() + i)
+    return d
+  })
+
+  const horarios = ['9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00', '20:30']
+
+  const formatDia = (d: Date) => d.toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric', month: 'short' })
+  const formatDiaKey = (d: Date) => d.toISOString().slice(0, 10)
+
+  const puedeReservar = carrito.length > 0 && fechaSeleccionada && horarioSeleccionado
+  const confirmarTurno = () => {
+    if (!puedeReservar) return
+    const dia = proximosDias.find((d) => formatDiaKey(d) === fechaSeleccionada)
+    alert(`Demo: Turno reservado para el ${dia ? formatDia(dia) : fechaSeleccionada} a las ${horarioSeleccionado}. En la versión final esto se enviará al salón.`)
+  }
+
   return (
     <div className="turnos container">
       <section className="turnos-header">
@@ -139,6 +160,53 @@ export default function Turnos() {
         })}
       </section>
 
+      {carrito.length > 0 && (
+        <section className="turnos-fecha-hora">
+          <h2>Elegí día y horario</h2>
+          <p className="turnos-paso-leyenda">Seleccioná la fecha y después el horario disponible</p>
+          <div className="turnos-dias">
+            {proximosDias.map((d) => {
+              const key = formatDiaKey(d)
+              const active = fechaSeleccionada === key
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  className={`turnos-dia-btn ${active ? 'active' : ''}`}
+                  onClick={() => setFechaSeleccionada(key)}
+                >
+                  <span className="turnos-dia-nombre">{d.toLocaleDateString('es-AR', { weekday: 'short' })}</span>
+                  <span className="turnos-dia-num">{d.getDate()}</span>
+                  <span className="turnos-dia-mes">{d.toLocaleDateString('es-AR', { month: 'short' })}</span>
+                </button>
+              )
+            })}
+          </div>
+          {fechaSeleccionada && (
+            <>
+              <h3 className="turnos-horarios-titulo">Horarios disponibles</h3>
+              <div className="turnos-horarios-grid">
+                {horarios.map((h) => (
+                  <button
+                    key={h}
+                    type="button"
+                    className={`turnos-hora-btn ${horarioSeleccionado === h ? 'active' : ''}`}
+                    onClick={() => setHorarioSeleccionado(h)}
+                  >
+                    {h}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+          {puedeReservar && (
+            <button type="button" className="btn-reservar-turno" onClick={confirmarTurno}>
+              Reservar turno
+            </button>
+          )}
+        </section>
+      )}
+
       {bannerVisible && (
         <div className="turnos-banner">
           <p>¡Bienvenida a Cb Centro De Belleza! Pagando en efectivo tenés 20% off.</p>
@@ -221,6 +289,34 @@ export default function Turnos() {
           position: fixed; bottom: 4rem; right: 1rem; background: var(--color-primario); color: white; padding: 1rem;
           border-radius: 12px; box-shadow: 0 4px 12px var(--sombra);
         }
+        .turnos-fecha-hora {
+          margin-top: 2rem; padding: 1.5rem; background: white; border-radius: 12px; box-shadow: 0 2px 12px var(--sombra);
+        }
+        .turnos-fecha-hora h2 { font-size: 1.25rem; margin: 0 0 0.25rem; color: var(--color-primario); }
+        .turnos-paso-leyenda { margin: 0 0 1rem; font-size: 0.9rem; color: #555; }
+        .turnos-dias { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+        .turnos-dia-btn {
+          display: flex; flex-direction: column; align-items: center; padding: 0.6rem 0.75rem; min-width: 56px;
+          border: 2px solid #e0e0e0; border-radius: 10px; background: #fafafa; cursor: pointer; font-size: 0.85rem;
+        }
+        .turnos-dia-btn:hover { border-color: var(--color-primario-claro); background: var(--crema); }
+        .turnos-dia-btn.active { border-color: var(--color-primario); background: var(--color-primario-claro); color: var(--texto); }
+        .turnos-dia-nombre { text-transform: capitalize; color: #666; }
+        .turnos-dia-num { font-weight: 700; font-size: 1.1rem; }
+        .turnos-dia-mes { text-transform: capitalize; color: #666; font-size: 0.8rem; }
+        .turnos-horarios-titulo { font-size: 1rem; margin: 0 0 0.75rem; color: #333; }
+        .turnos-horarios-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+        .turnos-hora-btn {
+          padding: 0.5rem 0.75rem; border: 2px solid #e0e0e0; border-radius: 8px; background: #fafafa;
+          font-size: 0.9rem; cursor: pointer;
+        }
+        .turnos-hora-btn:hover { border-color: var(--color-primario-claro); }
+        .turnos-hora-btn.active { border-color: var(--color-primario); background: var(--color-primario); color: white; }
+        .btn-reservar-turno {
+          width: 100%; padding: 1rem; background: var(--color-primario); color: white; border: none; border-radius: 10px;
+          font-size: 1rem; font-weight: 600; cursor: pointer;
+        }
+        .btn-reservar-turno:hover { background: var(--color-primario-hover); }
       `}</style>
     </div>
   )
